@@ -30,9 +30,9 @@ while True:
         vel_y = VELOCIDADE
 
     # Pinta
-    tela.fill(PRETO)
-    pygame.draw.circle(tela,AMARELO,(int(x),int(y)),raio,0)
-    pygame.display.update()
+    tela.fill(PRETO) #apagar o rastro
+    pygame.draw.circle(tela,AMARELO,(int(x),int(y)),raio,0) #armazenar o desenho
+    pygame.display.update() # desenhar de fato
 
     # Eventos
     for e in pygame.event.get():
