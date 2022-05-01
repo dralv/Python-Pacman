@@ -9,16 +9,20 @@ PRETO = (0,0,0)
 
 class Pacman:
     def __init__(self):
+        self.coluna = 1
+        self.linha = 1
         self.centro_x = 400
         self.centro_y = 300
-        self.tamanho = 100
-        self.vel_x = 0.5
-        self.vel_y = 0.5
+        self.tamanho = 800//30
+        self.vel_x = 1
+        self.vel_y = 1
         self.raio = int(self.tamanho/2)
 
     def calcular_regras(self):
-        self.centro_x = self.centro_x + self.vel_x
-        self.centro_y = self.centro_y + self.vel_y
+        self.coluna = self.coluna + self.vel_x
+        self.linha = self.linha + self.vel_y
+        self.centro_x = int(self.coluna * self.tamanho + self.raio)
+        self.centro_y = int(self.linha * self.tamanho + self.raio)
 
         if self.centro_x + self.raio > 800:
             self.vel_x = -1
@@ -58,11 +62,13 @@ if __name__ == "__main__":
 while True:
     # Calcular as regras
     pacman.calcular_regras()
-    screen.fill(PRETO)
+
 
     #Pintar a tela
+    screen.fill(PRETO)
     pacman.pintar(screen)
     pygame.display.update()
+    pygame.time.delay(100)
 
     # Captura os eventos
     for e in pygame.event.get():
