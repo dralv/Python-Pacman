@@ -49,11 +49,15 @@ class Cenario:
         for numero_coluna, coluna in enumerate(linha):
             x = numero_coluna * self.tamanho
             y = numero_linha * self.tamanho
+            half = self.tamanho//2
             cor = PRETO
             if coluna == 2:
                 cor = AZUL
 
             pygame.draw.rect(tela,cor,(x,y,self.tamanho,self.tamanho),0)
+
+            if coluna == 1:
+                pygame.draw.circle(tela,AMARELO,(x+half,y+half),self.tamanho//10,0)
 
     def pintar(self,tela): #capturar cada linha da matriz
         for numero_linha,linha in enumerate(self.matriz):
