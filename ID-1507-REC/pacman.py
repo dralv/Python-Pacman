@@ -15,6 +15,11 @@ BRANCO = (255,255,255)
 VELOCIDADE = 1
 
 
+ACIMA = 1
+ABAIXO = 2
+DIREITA = 3
+ESQUERDA = 4
+
 
 class ElementoJogo(metaclass=ABCMeta):
     @abstractmethod
@@ -33,7 +38,8 @@ class ElementoJogo(metaclass=ABCMeta):
 
 
 class Cenario(ElementoJogo):
-    def __init__(self,tamanho, pac):
+    def __init__(self,tamanho, pac,fan):
+        self.fantasma = fan
         self.pacman = pac
         self.tamanho = tamanho
         self.pontos = 0
@@ -94,7 +100,22 @@ class Cenario(ElementoJogo):
             self.pintar_linha(tela,numero_linha, linha)
         self.pintar_pontos(tela)
 
+    def get_direcoes(self,linha,coluna):
+        direcoes = []
+        if self.matriz[int(linha - 1)][int(coluna)] != 2:
+            direcoes.append(ACIMA)
+        if self.matriz[int(linha + 1)][int(coluna)] != 2:
+            direcoes.append(ABAIXO)
+        if self.matriz[int(linha)][int(coluna - 1)] != 2:
+            direcoes.append(ESQUERDA)
+        if self.matriz[int(linha)][int(coluna + 1)] != 2:
+            direcoes.append(DIREITA)
+
+        return direcoes
+
     def calcular_regras(self):
+        direcoes = self.get_direcoes(self.fantasma.linha, self.fantasma.coluna)
+        print(direcoes)
         col = self.pacman.coluna_intencao
         lin = self.pacman.linha_intencao
 
@@ -236,7 +257,7 @@ if __name__ == "__main__":
     size = 600//30
     pacman = Pacman(size)
     blinky = Fantasma(VERMELHO,size)
-    cenario = Cenario(size, pacman)
+    cenario = Cenario(size, pacman, blinky)
 
 
 while True:
