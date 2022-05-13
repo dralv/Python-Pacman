@@ -1,3 +1,5 @@
+import random
+
 import pygame
 from abc import ABCMeta, abstractmethod
 
@@ -115,7 +117,9 @@ class Cenario(ElementoJogo):
 
     def calcular_regras(self):
         direcoes = self.get_direcoes(self.fantasma.linha, self.fantasma.coluna)
-        print(direcoes)
+        if len(direcoes) >= 3:
+            self.fantasma.esquina(direcoes)
+        #print(direcoes)
         col = self.pacman.coluna_intencao
         lin = self.pacman.linha_intencao
 
@@ -125,6 +129,15 @@ class Cenario(ElementoJogo):
                 if self.matriz[lin][col] == 1:
                     self.pontos += 1
                     self.matriz[lin][col] = 0
+
+        col = int(self.fantasma.coluna_intencao)
+        lin = int(self.fantasma.linha_intencao)
+
+        if 0<= col < 28 and 0<= lin < 29 and self.matriz[lin][col] != 2:
+            self.fantasma.aceitar_movimento()
+        else:
+            self.fantasma.recusar_movimento(direcoes)
+
 
     def processar_eventos(self, evts):
         for e in evts:
@@ -213,7 +226,11 @@ class Pacman(ElementoJogo):
 class Fantasma(ElementoJogo):
     def __init__(self, cor, tamanho):
         self.coluna = 6.0
-        self.linha = 8.0
+        self.linha = 2.0
+        self.linha_intencao = self.linha
+        self.coluna_intencao = self.coluna
+        self.velocidade = 1
+        self.direcao = ABAIXO
         self.tamanho = tamanho
         self.cor = cor
 
@@ -248,7 +265,29 @@ class Fantasma(ElementoJogo):
         pygame.draw.circle(tela, PRETO, (olho_d_x, olho_d_y), olho_raio_int, 0)
 
     def calcular_regras(self):
-        pass
+        if self.direcao == ACIMA:
+            self.linha_intencao -= self.velocidade
+        elif self.direcao == ABAIXO:
+            self.linha_intencao += self.velocidade
+        elif self.direcao == ESQUERDA:
+            self.coluna_intencao -= self.velocidade
+        elif self.direcao == DIREITA:
+            self.coluna_intencao += self.velocidade
+
+    def mudar_direcao(self,direcoes):
+        self.direcao = random.choice(direcoes)
+
+    def esquina(self,direcoes):
+        self.mudar_direcao(direcoes)
+
+    def aceitar_movimento(self):
+        self.linha = self.linha_intencao
+        self.coluna = self.coluna_intencao
+
+    def recusar_movimento(self, direcoes):
+        self.linha_intencao = self.linha
+        self.coluna_intencao = self.coluna
+        self.mudar_direcao(direcoes)
 
     def processar_eventos(self,evts):
         pass
@@ -263,6 +302,7 @@ if __name__ == "__main__":
 while True:
     # Calcular as regras
     pacman.calcular_regras()
+    blinky.calcular_regras()
     cenario.calcular_regras()
 
 
